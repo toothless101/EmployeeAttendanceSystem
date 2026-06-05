@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <title>Departments</title>
+
+</head>
+
+<body>
+
+    <div id="sidebar-container"></div>
+    <div class="p-4 sm:ml-64">
+
+    <button id="addDepartmentBtn" type="button" class="text-body text-[#ffff] bg-[#354958] border border-default hover:bg-[#1e2f3d] cursor-pointer rounded-base text-sm px-4 py-2.5 focus:outline-none rounded-xl"> + Add Department</button>
+
+    <div class="relative overflow-x-auto bg-[#F8F8F8] shadow-xs rounded-2xl border border-default mt-4">
+
+        <h3 class="text-center font-bold text-m p-4 text-[#354958]">Departments</h3>
+
+        
+        <table class="w-full text-sm text-left rtl:text-right text-body">
+
+            <thead class="text-sm text-body bg-neutral-secondary-soft border-b-2 border-t-2 border-gray-300 rounded-base border-default">
+                <tr>
+                    <th scope="col" class="px-6 py-3 font-medium text-center text-[#1e2f3d]">ID</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-center text-[#1e2f3d]">Department</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-center text-[#1e2f3d]">Description</th>
+                    <!-- <th>No. of Employees</th> -->
+                    <th scope="col" class="px-6 py-3 font-medium text-center text-[#1e2f3d]">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="departmentTable"></tbody>
+
+        </table>
+
+    </div>
+    </div>
+
+    <div id="addDepartmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 class="modal-title">Add Department</h2>
+            <form id="addDepartmentForm">
+                <!-- <label for="departmentName">Department Name:</label> -->
+                <input type="text" id="departmentName" name="departmentName" required>
+                <!-- <label for="description">Description:</label> -->
+                <textarea id="description" name="departmentDescription" required></textarea>
+                <button type="submit">Add Department</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="updateDepartmentModal" class="modal">
+        <div class="modal-content">
+            <span class="updateclose">&times;</span>
+            <h2 class="modal-title">Update Department</h2>
+            <form id="updateDepartmentForm">
+                <input type="hidden" id="updateId" name="id">
+                <!-- <label for="updateName">Department Name:</label> -->
+                <input type="text" id="updateName" name="departmentName" required>
+                <!-- <label for="updateDescription">Description:</label> -->
+                <textarea id="updateDescription" name="description" required></textarea>
+                <button type="submit">Update Department</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/loadSidebar.js"></script>
+    <script src="/js/department.js"></script>
+
+    <style>
+        .modal{
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content{
+            background: #f8f8f8;
+            padding: 20px;
+            width: 400px;
+            border-radius: 10px;
+        }
+        .modal-title{
+            color: #354958;
+        }
+    </style>
+</body>
+
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Employees</title>
+
+</head>
+
+<body>
+
+    <div id="sidebar-container"></div>
+
+    <div class="p-4 sm:ml-64">
+
+    <button type="button" class="text-body text-[#ffff] bg-[#354958] border border-default hover:bg-[#1e2f3d] cursor-pointer rounded-base text-sm px-4 py-2.5 focus:outline-none rounded-xl" id="addEmployeeBtn"> + Add Employee</button>
+
+    <div class=" relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-2xl bg-[#F8F8F8] border border-default mt-4">
+
+        <h3 class="text-center font-bold text-m p-4 text-[#354958]">Employees</h3>
+            <table class="w-full text-sm text-left rtl:text-right text-body">
+
+            <thead class="text-sm text-body bg-neutral-secondary-soft border-b-2 border-t-2 border-gray-300 rounded-base border-default">
+                <tr>
+                    <th scope="col" class="px-6 py-3 font-medium text-center text-[#1e2f3d]">Image</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-center text-[#1e2f3d]">Name</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-center text-[#1e2f3d]">Department</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-center text-[#1e2f3d]">Email</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-center text-[#1e2f3d]">Position</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-center text-[#1e2f3d]">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="employeeTable"></tbody>
+
+        </table>
+        </div>
+        </div>
+
+    </div>
+ </div>
+    <div id="addEmployeeModal" class="modal hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="modal-content relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
+            <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
+                <h2 class="modal-title text-lg font-medium text-heading">Add Employee</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form id="addEmployeeForm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+
+                    <div class="md:col-span-2">
+                        <label for="fullname" class="block mb-2 text-sm font-medium text-heading">Full Name</label>
+                        <input type="text" id="fullname" name="fullname" class="w-full px-3 py-2.5 text-sm rounded-base border border-default-medium bg-neutral-secondary-medium" placeholder="Enter full name" required>
+                    </div>
+
+                    <div>
+                        <label for="email" class="block mb-2 text-sm font-medium text-heading">Email</label>
+                        <input type="email" id="email" name="email" class="w-full px-3 py-2.5 text-sm rounded-base border border-default-medium bg-neutral-secondary-medium" placeholder="employee@email.com" required>
+                    </div>
+
+                    <div>
+                        <label for="phone_number" class="block mb-2 text-sm font-medium text-heading">Phone Number</label>
+                        <input type="text" id="phone_number" name="phone_number" class="w-full px-3 py-2.5 text-sm rounded-base border border-default-medium bg-neutral-secondary-medium" placeholder="09XXXXXXXXX" required>
+                    </div>
+
+                    <div>
+                        <label for="department_id" class="block mb-2 text-sm font-medium text-heading">Department</label>
+                        <select id="department_id" name="department_id" class="w-full px-3 py-2.5 text-sm rounded-base border border-default-medium bg-neutral-secondary-medium" required>
+                            <option value="">Select Department</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="position" class="block mb-2 text-sm font-medium text-heading">Position</label>
+                        <input type="text" id="position" name="position" class="w-full px-3 py-2.5 text-sm rounded-base border border-default-medium bg-neutral-secondary-medium" placeholder="Enter position" required>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label for="profile_image" class="block mb-2 text-sm font-medium text-heading">Profile Image</label>
+                        <input type="file" id="profile_image" name="profile_image" accept="image/*" class="block w-full text-sm rounded-base border border-default-medium bg-neutral-secondary-medium">
+                    </div>
+
+                </div>
+                <div class="flex justify-end gap-3 border-t border-default pt-4">
+                    <button type="button" class="px-4 py-2 text-sm rounded-base border border-default-medium hover:bg-neutral-tertiary-medium">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-sm rounded-base bg-brand text-white hover:bg-brand-strong">Add Employee</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div id="updateEmployeeModal" class="modal hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="modal-content relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
+            <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
+                <h2 class="modal-title text-lg font-medium text-heading">Update Employee</h2>
+                <span class="updateclose">&times;</span>
+            </div>
+            <form id="updateEmployeeForm">
+                <input type="hidden" id="updateId" name="id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+                    <div class="flex items-center justify-center md:justify-start md:col-span-2">
+                        <img id="currentProfileImage" src="" alt="Current Profile Image" class="w-24 h-24 rounded-full object-cover mb-4 md:mb-0 md:me-4">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="fullname" class="block mb-2 text-sm font-medium text-heading">Full Name</label>
+                        <input type="text" id="updateFullname" name="fullname" class="text-[#354958] w-full px-3 py-2.5 text-sm rounded-base border border-default-medium bg-neutral-secondary-medium" placeholder="Enter full name" required>
+                    </div>
+
+                    <div>
+                        <label for="email" class="block mb-2 text-sm font-medium text-heading">Email</label>
+                        <input type="email" id="updateEmail" name="email" class="text-[#354958] w-full px-3 py-2.5 text-sm rounded-base border border-default-medium bg-neutral-secondary-medium" placeholder="employee@email.com" required>
+                    </div>
+
+                    <div>
+                        <label for="phone_number" class="block mb-2 text-sm font-medium text-heading">Phone Number</label>
+                        <input type="text" id="updatePhone_number" name="phone_number" class="text-[#354958] w-full px-3 py-2.5 text-sm rounded-base border border-default-medium bg-neutral-secondary-medium" placeholder="09XXXXXXXXX" required>
+                    </div>
+
+                    <div>
+                        <label for="department_id" class="block mb-2 text-sm font-medium text-heading">Department</label>
+                        <select id="updateDepartment_id" name="department_id" class="text-[#354958] w-full px-3 py-2.5 text-sm rounded-base border border-default-medium bg-neutral-secondary-medium" required>
+                            <option value="">Select Department</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="position" class="block mb-2 text-sm font-medium text-heading">Position</label>
+                        <input type="text" id="updatePosition" name="position" class="text-[#354958] w-full px-3 py-2.5 text-sm rounded-base border border-default-medium bg-neutral-secondary-medium" placeholder="Enter position" required>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label for="profile_image" class="block mb-2 text-sm font-medium text-heading">Profile Image</label>
+                        <input type="file" id="updateProfile_image" name="profile_image" accept="image/*" class="block w-full text-sm rounded-base border border-default-medium bg-neutral-secondary-medium">
+                    </div>
+
+                </div>
+                <div class="flex justify-end gap-3 border-t border-default pt-4">
+                    <button type="button" class="px-4 py-2 text-sm rounded-2xl border border-[#354958] hover:bg-neutral-tertiary-medium">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-sm rounded-2xl text-white bg-[#354958] hover:bg-brand-strong">Update Employee</button>
+                </div>
+
+    </div>
+
+    <script src="/js/loadSidebar.js"></script>
+    <script src="/js/employees.js"></script>
+
+    <style>
+        .modal{
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content{
+            background: #f8f8f8;
+            padding: 20px;
+            width: 400px;
+            border-radius: 10px;
+        }
+        .modal-title{
+            color: #354958;
+        }
+    </style>
+</body>
+
+</html>
