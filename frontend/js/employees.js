@@ -11,7 +11,7 @@ function loadEmployees() {
                 'text-center'
             )
             row.innerHTML = `
-                <td><img src="http://localhost:4000/uploads/${employee.profile_image}" alt="Profile Image" style="width: 50px; height: 50px;" class="rounded-full"></td>
+                <td class="px-4 py-3 align-center"><img src="http://localhost:4000/uploads/${employee.profile_image}" alt="Profile Image" style="width: 50px; height: 50px;" class="rounded-full"></td>
                 <td class="px-6 py-3 font-medium text-center text-[#1e2f3d]">${employee.fullname}</td>
                 <td class="px-6 py-3 font-medium text-center text-[#1e2f3d]">${employee.department_name}</td>
                 <td class="px-6 py-3 font-medium text-center text-[#1e2f3d]">${employee.email}</td>

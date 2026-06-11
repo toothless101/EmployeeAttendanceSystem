@@ -10,16 +10,124 @@
 <body>
     <div id="sidebar-container"></div>
      <div class="p-4 sm:ml-64">
-        <div class="w-full text-center bg-[#F8F8F8] p-6 rounded-2xl shadow-xs border border-default">
-            <h3 class="text-start font-bold text-ms text-[#354958]">Emplyee Details</h3>
-            <form action="">
-                <div class="flex items-center justify-left mt-4">
-                    <img id="employeeProfileImage" src="" alt="Profile Image" class="w-32 h-32 rounded-full object-cover bg-gray-300">
+        <input type="text" id="searchInput" placeholder="Search..." class="w-2/3 p-2 mb-4 text-sm text-body border border-default rounded-full focus:ring-primary focus:border-primary">
+        <div id="searchResults"></div>
+        <div class="w-full bg-[#F8F8F8] p-6 rounded-2xl shadow-xs border border-default">
+
+            <h3 class="text-[#354958] text-md font-bold mb-6">Employee Details</h3>
+
+            <!-- Employee Info -->
+            <div class="flex items-center gap-8 mb-8">
+
+                <img id="employeeProfileImage" src="" alt="" class="flex w-32 h-32 rounded-full object-cover bg-gray-300">
+
+                <div class="flex-1">
+
+                    <h3 id="employeeName" class="text-xl font-bold text-[#354958] mb-4"></h3>
+
+                    <div class="grid grid-cols-3 gap-8">
+
+                        <div>
+                            <p class=" text-xs text-gray-400 mb-1">Department</p>
+                            <p id="employeeDepartment" class="text-sm font-medium text-slate-700"></p>
+                        </div>
+
+                        <div>
+                            <p class=" text-xs text-gray-400 mb-1">Position</p>
+                            <p id="employeePosition" class="text-sm font-medium text-slate-700"></p>
+                        </div>
+
+                        <div>
+                            <p class=" text-xs text-gray-400 mb-1">Email</p>
+                            <p id="employeeEmail" class="text-sm font-medium text-slate-700"></p>
+                        </div>
+
+                    </div>
+
                 </div>
-            </form>
-            
+
+            </div>
+
+            <!-- Statistics -->
+            <div class="grid grid-cols-4 gap-6 mb-8">
+
+                <div class="flex items-center gap-3 bg-gray-100 rounded-xl p-4" id="presentDays">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-full bg-sky-200"></div>
+                    <div>
+                        <h4 class="text-lg font-bold text-slate-700" id="presentCount"></h4>
+                        <p class="text-xs text-gray-500">Total No. of On Time</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 bg-gray-100 rounded-xl p-4" id="lateDays">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-full bg-green-200"></div>
+                    <div>
+                        <h4 class="text-lg font-bold text-slate-700" id="lateCount"></h4>
+                        <p class="text-xs text-gray-500">Late Attendance</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 bg-gray-100 rounded-xl p-4" id="absentDays">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-full bg-red-200"></div>
+                    <div>
+                        <h4 class="text-lg font-bold text-slate-700" id="absentCount"></h4>
+                        <p class="text-xs text-gray-500">Total Absent</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 bg-gray-100 rounded-xl p-4" id="leaveDays">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-full bg-yellow-200"></div>
+                    <div>
+                        <h4 class="text-lg font-bold text-slate-700" id="leaveCount"></h4>
+                        <p class="text-xs text-gray-500">Total Leave</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex justify-end gap-4">
+
+                <button id="time_in" class="hidden px-8 py-2 text-sm text-white bg-green-600 rounded-md hover:bg-green-700 cursor-pointer">
+                    Time In
+                </button>
+
+                <button id="time_out" class="hidden px-8 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 cursor-pointer">
+                    Time Out
+                </button>
+
+                <button id="leave" class=" hidden px-8 py-2 text-sm text-white bg-orange-500 rounded-md hover:bg-orange-600 cursor-pointer">
+                    Leave
+                </button>
+
+            </div>
+
         </div>
+
+        <div class="relative overflow-x-auto bg-[#F8F8F8] shadow-xs rounded-2xl border border-default mt-4">
+
+        <h3 class="text-center font-bold text-m p-4 text-[#354958]">Attendance List</h3>
+
+        <table class="w-full text-sm text-left rtl:text-right text-body">
+
+            <thead class="text-sm text-body bg-neutral-secondary-soft border-b-2 border-t-2 border-gray-300 rounded-base border-default">
+                <tr>
+                    <th scope="col" class="px-6 py-3 font-medium text-center text-[#1e2f3d]">Name</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-center text-[#1e2f3d]">Position</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-center text-[#1e2f3d]">Date</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-center text-[#1e2f3d]">Time In</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-center text-[#1e2f3d]">Time Out</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-center text-[#1e2f3d]">Status</th>
+                </tr>
+            </thead>
+
+            <tbody id="attendanceTableBody"></tbody>
+
+        </table>
+
+    </div>
      </div>
     <script src="/js/loadSidebar.js"></script>
+    <script src="/js/attendance.js"></script>
 </body>
 </html>

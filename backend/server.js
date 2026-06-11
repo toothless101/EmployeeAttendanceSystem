@@ -111,7 +111,7 @@ async function startServer() {
 
     app.post('/employees', upload.single('profile_image'), async (req, res) => {
         const { fullname, email, phone_number, department_id, position } = req.body;
-        const profile_image = req.file ? req.file.filename : null;
+        const profile_image = req.file ? req.file.filename : null; //condition, if the user provided an image, use the filename, otherwise set to null
         try {
             const [result] = await db.query("INSERT INTO employees (fullname, email, phone_number, department_id, profile_image, position) VALUES (?, ?, ?, ?, ?, ?)", [fullname, email, phone_number, department_id, profile_image, position]);
             res.status(201).json({ id: result.insertId, fullname, email, phone_number, department_id, profile_image, position });
@@ -169,6 +169,130 @@ async function startServer() {
             res.status(500).json({ error: "Failed to delete employee" });
         }
     });
+
+    //attendance
+    app.get('/attendance', async(req, res)=>{
+        try {
+            const [attendance] = await db.query('select e.employee_id, e.fullname, e.position, ar.attendance_date, ar.time_in, ar.time_out, ar.status from employees e join attendance_record ar WHERE e.employee_id = ar.employee_id AND attendance_date = CURDATE()');
+            res.json(attendance);
+        } catch (error) {
+            console.error("Error fetching attendance records:", error);
+            res.status(500).json({ error: "Failed to fetch attendance records" });
+        }
+    });
+
+    app.get('/attendance/search', async(req, res)=>{
+        const keyword = req.query.keyword;
+
+        try{
+            const [attendance] = await db.query('select employee_id, fullname from employees where fullname like ?', [`%${keyword}%`]);
+            res.json(attendance);
+        }catch(error){
+            console.error("Error searching attendance records:", error);
+            res.status(500).json({ error: "Failed to search attendance records" });
+        }
+    });
+
+    //official time in for attendance (8:00 AM)
+    const OFFICIAL_TIME_IN = "08:00:00";
+
+    //record attendance - time_in
+    app.post('/attendance/time_in', async(req, res)=>{
+        const {employee_id} = req.body;
+
+        try{
+            const [existing] = await db.query('SELECT * FROM attendance_record WHERE employee_id = ? AND attendance_date = CURDATE()', [employee_id]);
+
+            if(existing.length > 0){
+                return res.json({ message: "Attendance already recorded for today" });
+                console.log('Attendance already recorded for today');
+            }
+
+            const time_in = new Date();
+            const currentTime = time_in.toTimeString().split(' ')[0];
+
+            const status = currentTime > OFFICIAL_TIME_IN ? "Late" : "Present"; 
+
+            await db.query('INSERT INTO attendance_record(employee_id, attendance_date, time_in, status) VALUES (?, CURDATE(), ?, ?)', [employee_id, currentTime, status]);
+            res.json({ message: "Time in recorded successfully" });
+
+        } catch(error){
+            console.error("Error recording time in:", error);
+            res.status(500).json({ message: "Failed to record time in" });
+        }
+            
+    })
+
+    app.post('/attendance/time_out', async(req, res)=>{
+        const {employee_id} = req.body;
+
+        try{
+           const [existing] = await db.query('SELECT * FROM attendance_record WHERE employee_id = ? AND time_out IS NOT NULL AND attendance_date = CURDATE()', [employee_id]);
+
+            if(existing.length > 0){
+                return res.json({ message: "Attendance already recorded for today" });
+                console.log('Attendance already recorded for today');
+            }
+
+            const time_out = new Date();
+            const currentHour = now.getHours();
+
+            if(currentHour < 17){
+                return res.status(400).json({
+                    message: 'Time Out is only allowed after 5:00 PM'
+                });
+            }
+
+            await db.query('UPDATE attendance_record SET time_out = ? WHERE employee_id = ? AND attendance_date = CURDATE()', [currentHour, employee_id]);
+            res.json({ message: "Time out recorded successfully" });
+        } catch(error){
+            console.error("Error recording time out:", error);
+            res.status(500).json({ message: "Failed to record time out" });
+        }
+    });
+
+    app.post('/attendance/leave', async(req, res)=>{
+        const {employee_id} = req.body;
+
+        try{
+           const [existing] = await db.query('SELECT * FROM attendance_record WHERE employee_id = ? AND status = "Leave" AND attendance_date = CURDATE()', [employee_id]);
+
+            if(existing.length > 0){
+                return res.json({ message: "Employee Status Already Recorded" });
+                console.log('Employee Status Already Recorded');
+            }
+
+            const time_out = new Date();
+            const currentTime = time_out.toTimeString().split(' ')[0];  
+
+            await db.query('INSERT INTO attendance_record(employee_id, attendance_date, status) VALUES (?, CURDATE(), "Leave")', [employee_id]);
+            res.json({ message: "Leave recorded successfully" });
+        } catch(error){
+            console.error("Error recording leave status:", error);
+            res.status(500).json({ message: "Failed to record leave status" });
+        }
+    });
+
+    app.get('/attendance/statistics/:employee_id', async(req, res) =>{
+        const {employee_id} = req.params;
+        try{
+            const [rows] = await db.query(`SELECT DATEDIFF(CURDATE(), hire_date) + 1 AS total_days FROM employees WHERE employee_id = ?`, [employee_id]);
+            console.log(rows)
+            const employee = rows[0];
+            const [[present]] = await db.query(`SELECT COUNT(*) as total FROM attendance_record WHERE employee_id = ? AND status = 'Present'`, [employee_id]);
+            const [[late]] = await db.query(`SELECT COUNT(*) as total FROM attendance_record WHERE employee_id = ? AND status = 'Late'`, [employee_id]);
+            const [[leave]] = await db.query(`SELECT COUNT(*) as total FROM attendance_record WHERE employee_id = ? AND status = 'Leave'`, [employee_id]);
+
+            //computation for update (including weekend)
+            const absent = Math.max(0, employee.total_days - present.total - late.total - leave.total);
+
+            res.json({present: present.total, late: late.total, leave: leave.total, absent: absent});
+        }catch(error){
+            res.status(500).json('Error retrieving employee statistics');
+            console.error(error);
+        }
+    });
+
 
     app.listen(4000, () => {
         console.log('Server is running on port 4000');
