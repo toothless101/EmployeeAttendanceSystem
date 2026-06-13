@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
+    <link rel="stylesheet" href="/src/css/style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div id="sidebar-container"></div>
+        <div class="p-4 sm:ml-64">
+            <div class="grid grid-cols-3 md:grid-cols-3 grid-rows-3 md:grid-rows-3 gap-2 md:gap-2 m-4">
+                <div class="hidden md:block md:col-start-2 md:row-start-2 md:col-span-2 md:row-span-2 bg-gray-300 rounded-md p-10" id="presentEmployees">
+                    <h3>Present Employees List</h3>
+                </div>
+                <div class="hidden md:block md:col-start-1 md:row-start-1 md:col-span-1 md:row-span-1 bg- rounded-md p-10" id="totalEmployees">
+                    <h3>Total Employees</h3>
+                </div>
+                <div class="hidden md:block md:col-start-2 md:row-start-1 md:col-span-1 md:row-span-1 bg-gray-300 rounded-md p-10" id="totalPresent">
+                    <h3>Present Today</h3>
+                </div>
+                <div class="hidden md:block md:col-start-3 md:row-start-1 md:col-span-1 md:row-span-1 bg-gray-300 rounded-md p-10" id="totalDepartments">
+                    <h3>Departments</h3>
+                </div>
+                <div class="hidden md:block md:col-start-1 md:row-start-2 md:col-span-1 md:row-span-1 bg-gray-300 rounded-md p-10" id="currentTime">
+                    <h3>Current Time</h3>
+                </div>
+                <div class="hidden md:block md:col-start-1 md:row-start-3 md:col-span-1 md:row-span-1 bg-gray-300 rounded-md p-10" id="Dchart">
+                    <h3>Attendance Overview</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <script src="/js/loadSidebar.js"></script>
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>

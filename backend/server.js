@@ -293,6 +293,17 @@ async function startServer() {
         }
     });
 
+    app.get('/attendance/report', async(req, res)=>{
+        const {date} = req.query;
+        try{
+            const [records] = await db.query(`SELECT e.employee_id, e.fullname, e.position, e.profile_image, d.department_name, ar.time_in, ar.time_out, ar.status FROM attendance_record ar JOIN employees e ON ar.employee_id = e.employee_id JOIN departments d ON e.department_id = d.department_id WHERE ar.attendance_date = ? ORDER BY e.fullname ASC`, [date]);
+            res.json(records);
+        }catch(error){
+            console.log(error);
+            res.status(500).json({message: 'Failed to fetch report', error});
+        }
+    });
+
 
     app.listen(4000, () => {
         console.log('Server is running on port 4000');

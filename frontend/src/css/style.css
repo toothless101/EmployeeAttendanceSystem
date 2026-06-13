@@ -1,0 +1,52 @@
+@media print {
+
+      body * {
+        visibility: hidden;
+    }
+
+    #reportSection,
+    #reportSection * {
+        visibility: visible;
+    }
+
+    #reportSection {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+    
+
+    #printBtn,
+    #searchReportBtn,
+    #reportDate {
+        display: none;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    p {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+}
