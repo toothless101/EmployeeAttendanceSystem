@@ -234,8 +234,8 @@ async function startServer() {
                 console.log('Attendance already recorded for today');
             }
 
-            const time_out = new Date();
-            const currentHour = now.getHours();
+            const timeOut = new Date();
+            const currentHour = timeOut.getHours();
 
             if(currentHour < 17){
                 return res.status(400).json({
@@ -243,7 +243,7 @@ async function startServer() {
                 });
             }
 
-            await db.query('UPDATE attendance_record SET time_out = ? WHERE employee_id = ? AND attendance_date = CURDATE()', [currentHour, employee_id]);
+            await db.query('UPDATE attendance_record SET time_out = ? WHERE employee_id = ? AND attendance_date = CURDATE()', [timeOut, employee_id]);
             res.json({ message: "Time out recorded successfully" });
         } catch(error){
             console.error("Error recording time out:", error);
@@ -304,6 +304,34 @@ async function startServer() {
         }
     });
 
+    //total number of employees
+    app.get('/dashboard/statistics', async (req, res) =>{
+        try{
+            const [[employees]] = await db.query('SELECT COUNT(*) AS total FROM employees')
+            const [[present]] = await db.query(`SELECT COUNT(*) as total FROM attendance_record WHERE status IN ('Present', 'Late') AND attendance_date = CURDATE()`);
+            const [[departments]] = await db.query(`SELECT COUNT(*) as total FROM departments`);
+
+            res.json({totalEmployees: employees.total, totalPresent: present.total, departments: departments.total });
+            console.log(employees.total)
+        }catch(error){
+            console.error(error);
+            console.log(error)
+            res.status(500).json({message: "Error fetching data"})
+        }
+    });
+
+    app.get('/dashboard/chart', async(req, res) =>{
+        try {
+            const [present] = await db.query(`SELECT COUNT(*) AS totalpresent FROM attendance_record WHERE status IN ('Present', 'Late') AND attendance_date = CURDATE()`);
+            const [totalEmployees] = await db.query('SELECT COUNT(*) as totalemployees FROM employees')
+
+            res.json({
+                totalPresent: present[0].totalpresent, totalEmployees: totalEmployees[0].totalemployees});
+        } catch (error) {
+            console.error(error)
+            res.status(500).json({message: 'Failed to fetch data'})
+        }
+    })
 
     app.listen(4000, () => {
         console.log('Server is running on port 4000');

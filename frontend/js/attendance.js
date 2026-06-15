@@ -6,8 +6,11 @@ function loadAttendance(){
         attendanceTable.innerHTML = '';
 
         attendance.forEach(record => {
-            const dateFormat =  new Date(record.attendance_date).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            const dateFormat =  new Date(record.attendance_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: '2-digit' });
             const row = document.createElement('tr');
+            const timeIn = new Date(record.time_in).toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'});
+            const timeOut = new Date(record.time_out).toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'});
+          
             row.innerHTML = `
                 <td class="px-6 py-4 text-center text-[#1e2f3d]">${record.fullname}</td>
                 <td class="px-6 py-4 text-center text-[#1e2f3d]">${record.position}</td>
